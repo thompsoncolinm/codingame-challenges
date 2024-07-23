@@ -51,7 +51,6 @@ while (true) {
 
             searchSpace.x.max = batPos.x - 1;
             mid = Math.ceil((searchSpace.x.max - searchSpace.x.min) / 2);
-            console.error('move L mid point: ', mid);
             (mid === 0) ? batPos.x -= 1 : batPos.x -= mid;
             if (batPos.x < 0) {
                 batPos.x = 0;
