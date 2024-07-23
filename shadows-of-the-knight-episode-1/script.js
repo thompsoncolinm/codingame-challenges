@@ -16,26 +16,72 @@ let batPos = {
     'y' : Y0
 }
 
+let searchSpace = {
+    'x' : {
+        'min' : 0,
+        'max' : W
+    },
+    'y' : {
+        'min' : 0,
+        'max' : H
+    }
+}
+
 // game loop
 while (true) {
     const bombDir = readline(); // the direction of the bombs from batman's current location (U, UR, R, DR, D, DL, L or UL)
-    moveDir = '';
+    let moveDir = '';
+    let mid;
     
 
     try {
         console.error('Bomb Direction: ', bombDir);
 
-        if (bombDir.includes('R') && checkWidth(batPos.x + 1)){
-                moveDir += ++batPos.x + ' ';
-        } else if (bombDir.includes('L') && checkWidth(batPos.x - 1)){
-            moveDir += ++batPos.x + ' ';
+        if (bombDir.includes('R')){
+
+            searchSpace.x.min = batPos.x + 1;
+            mid = Math.ceil((searchSpace.x.max - searchSpace.x.min) / 2);
+            batPos.x += mid;
+            if (batPos.x > W) {
+                batPos.x = W;
+            }
+            moveDir += batPos.x + ' ';
+
+        } else if (bombDir.includes('L')){
+
+            searchSpace.x.max = batPos.x - 1;
+            mid = Math.ceil((searchSpace.x.max - searchSpace.x.min) / 2);
+            console.error('move L mid point: ', mid);
+            (mid === 0) ? batPos.x -= 1 : batPos.x -= mid;
+            if (batPos.x < 0) {
+                batPos.x = 0;
+            }
+            moveDir += batPos.x + ' ';
+
         } else {
             moveDir += batPos.x + ' ';
         }
-        if (bombDir.includes('U') && checkHeight(batPos.y - 1)){
-            moveDir += (--batPos.y).toString();
-        } else if (bombDir.includes('D') && checkHeight(batPos.y + 1)){
-            moveDir += (++batPos.y).toString();
+
+        if (bombDir.includes('U')){
+
+            searchSpace.y.max = batPos.y - 1;
+            mid = Math.ceil((searchSpace.y.max - searchSpace.y.min) / 2);
+            (mid === 0)? batPos.y -= 1 : batPos.y -= mid;
+            if (batPos.y < 0) {
+                batPos.y = 0;
+            }
+            moveDir += (batPos.y).toString();
+
+        } else if (bombDir.includes('D')){
+
+            searchSpace.y.min = batPos.y + 1;
+            mid = Math.ceil((searchSpace.y.max - searchSpace.y.min) / 2);
+            batPos.y += mid;
+            if (batPos.y > H) {
+                batPos.y = H;
+            }
+            moveDir += (batPos.y).toString();
+
         } else {
             moveDir += (batPos.y).toString();;
         }
@@ -49,17 +95,4 @@ while (true) {
 
     // the location of the next window Batman should jump to.
     console.log(moveDir);
-}
-
-function checkWidth(batW){
-    if (batW < 0 || batW > W) {
-        return false;
-    }
-    return true;
-}
-function checkHeight(batH){
-    if (batH < 0 || batH > H) {
-        return false;
-    }
-    return true;
 }
